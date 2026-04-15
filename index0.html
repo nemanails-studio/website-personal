@@ -1,0 +1,1303 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Nema Nails</title>
+  <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+  <style>
+    :root {
+      --pink-main: rgb(219 39 119);
+      --pink-dark: rgb(190 24 93);
+      --pink-soft: rgb(253 242 248);
+      --pink-soft-2: rgb(252 231 243);
+      --text-dark: rgb(17 24 39);
+    }
+
+    html {
+      scroll-behavior: smooth;
+    }
+
+    body {
+      background:
+        radial-gradient(circle at top left, rgba(244, 114, 182, 0.16), transparent 28%),
+        radial-gradient(circle at top right, rgba(251, 207, 232, 0.8), transparent 30%),
+        linear-gradient(180deg, #fff8fb 0%, #fffdfd 40%, #fff7fa 100%);
+    }
+
+    @keyframes bounceCart {
+      0% { transform: scale(1); }
+      50% { transform: scale(1.18); }
+      100% { transform: scale(1); }
+    }
+
+    @keyframes addedFlash {
+      0% { transform: translateY(0); }
+      35% { transform: translateY(-2px); }
+      50% { background: rgb(34 197 94); }
+      100% { transform: translateY(0); }
+    }
+
+    @keyframes floatingGlow {
+      0%, 100% { transform: translateY(0px); }
+      50% { transform: translateY(-8px); }
+    }
+
+    @keyframes fadeUp {
+      from {
+        opacity: 0;
+        transform: translateY(18px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    .fade-up {
+      animation: fadeUp 0.7s ease both;
+    }
+
+    .glass-card {
+      background: rgba(255, 255, 255, 0.74);
+      backdrop-filter: blur(16px);
+      border: 1px solid rgba(244, 114, 182, 0.16);
+      box-shadow: 0 18px 60px rgba(190, 24, 93, 0.08);
+    }
+
+    .soft-ring {
+      box-shadow:
+        0 0 0 1px rgba(244, 114, 182, 0.10),
+        0 22px 50px rgba(17, 24, 39, 0.06);
+    }
+
+    .cart-bounce {
+      animation: bounceCart 0.4s ease;
+    }
+
+    .btn-added {
+      animation: addedFlash 0.6s ease;
+    }
+
+    .cart-panel-enter {
+      transform: translateX(100%);
+      opacity: 0;
+    }
+
+    .cart-panel-open {
+      transform: translateX(0);
+      opacity: 1;
+    }
+
+    .cart-overlay-show {
+      opacity: 1;
+      visibility: visible;
+    }
+
+    .cart-overlay-hide {
+      opacity: 0;
+      visibility: hidden;
+    }
+
+    .payment-card.active {
+      border-color: rgb(219 39 119);
+      background: linear-gradient(180deg, rgb(255 255 255), rgb(253 242 248));
+      box-shadow: 0 0 0 1px rgba(219, 39, 119, 0.12), 0 12px 30px rgba(219, 39, 119, 0.10);
+    }
+
+    .size-chip {
+      transition: all 0.22s ease;
+    }
+
+    .size-chip.active {
+      background: linear-gradient(135deg, rgb(219 39 119), rgb(236 72 153));
+      color: white;
+      border-color: rgb(219 39 119);
+      box-shadow: 0 8px 18px rgba(219, 39, 119, 0.18);
+    }
+
+    .hero-image-wrap {
+      position: relative;
+      animation: floatingGlow 5s ease-in-out infinite;
+    }
+
+    .hero-image-wrap::before,
+    .hero-image-wrap::after {
+      content: "";
+      position: absolute;
+      inset: auto;
+      border-radius: 999px;
+      filter: blur(14px);
+      z-index: -1;
+    }
+
+    .hero-image-wrap::before {
+      width: 170px;
+      height: 170px;
+      background: rgba(244, 114, 182, 0.22);
+      top: -20px;
+      left: -20px;
+    }
+
+    .hero-image-wrap::after {
+      width: 210px;
+      height: 210px;
+      background: rgba(251, 207, 232, 0.7);
+      bottom: -24px;
+      right: -16px;
+    }
+
+    .product-card {
+      transition: transform 0.28s ease, box-shadow 0.28s ease, border-color 0.28s ease;
+    }
+
+    .product-card:hover {
+      transform: translateY(-8px);
+      box-shadow: 0 26px 55px rgba(190, 24, 93, 0.11);
+    }
+
+    .product-image {
+      transition: transform 0.4s ease;
+    }
+
+    .product-card:hover .product-image {
+      transform: scale(1.04);
+    }
+
+    .section-title {
+      letter-spacing: 0.18em;
+    }
+
+    .modal-card,
+    .booking-side-card,
+    .checkout-box {
+      background: linear-gradient(180deg, rgba(255,255,255,0.95), rgba(255, 248, 251, 0.95));
+      backdrop-filter: blur(12px);
+    }
+
+    .hide-scrollbar::-webkit-scrollbar {
+      width: 0;
+      height: 0;
+    }
+
+    .search-mini-premium {
+      backdrop-filter: blur(10px);
+    }
+
+    .ios-date-input {
+      -webkit-appearance: none;
+      appearance: none;
+      min-height: 52px;
+      line-height: 1.2;
+    }
+
+    .ios-date-input::-webkit-date-and-time-value {
+      text-align: left;
+    }
+
+    .ios-date-input::-webkit-calendar-picker-indicator {
+      opacity: 0.01;
+      position: absolute;
+      right: 16px;
+      width: 24px;
+      height: 24px;
+      cursor: pointer;
+    }
+
+    .ios-date-wrap {
+      position: relative;
+    }
+
+    .ios-date-icon {
+      pointer-events: none;
+      position: absolute;
+      right: 16px;
+      top: 50%;
+      transform: translateY(-50%);
+      font-size: 18px;
+      color: rgb(236 72 153);
+    }
+
+    @supports (-webkit-touch-callout: none) {
+      .ios-date-input {
+        font-size: 16px;
+      }
+    }
+
+    @media (max-width: 640px) {
+      .mobile-stack {
+        flex-direction: row;
+        align-items: center;
+        justify-content: flex-end;
+      }
+    }
+  </style>
+</head>
+<body class="min-h-screen text-gray-800 selection:bg-pink-100 selection:text-pink-700">
+  <header class="sticky top-0 z-50 border-b border-pink-100 bg-white/80 backdrop-blur-xl">
+    <div class="mx-auto flex max-w-7xl items-center justify-between gap-4 px-4 py-4 sm:px-6 lg:px-8">
+      <a href="index.html" class="flex items-center gap-3">
+        <img src="assets/Logo-Nema.PNG" alt="Logo Nema Nails" class="h-12 w-auto object-contain drop-shadow-sm" />
+        <div>
+          <p class="text-xs font-semibold uppercase tracking-[0.24em] text-pink-500">Beauty Studio</p>
+          <h1 class="text-lg font-bold text-gray-900">Nema Nails</h1>
+        </div>
+      </a>
+
+      <nav class="hidden items-center gap-6 text-sm font-medium text-gray-600 lg:flex">
+        <a href="#booking" class="transition hover:text-pink-600">Booking</a>
+        <a href="#products" class="transition hover:text-pink-600">Products</a>
+        <a href="#contact" class="transition hover:text-pink-600">Contact</a>
+      </nav>
+
+      <div class="mobile-stack flex items-center gap-3">
+
+        <!-- WHATSAPP -->
+        <a
+          href="https://wa.me/6283815423269?text=Halo%20Nema%20Saya%20Mau%20Tanya%20Produk"
+          target="_blank"
+          aria-label="WhatsApp"
+          class="flex h-11 w-11 items-center justify-center rounded-full bg-green-500 text-white shadow-md transition hover:scale-105"
+        >
+          <!-- WA ICON -->
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="h-5 w-5 fill-current">
+            <path d="M20.52 3.48A11.82 11.82 0 0012.07 0C5.56 0 .26 5.3.26 11.81c0 2.08.54 4.1 1.58 5.89L0 24l6.5-1.7a11.76 11.76 0 005.56 1.42h.01c6.5 0 11.8-5.3 11.8-11.81 0-3.15-1.23-6.11-3.35-8.43zM12.07 21.7h-.01a9.8 9.8 0 01-4.99-1.36l-.36-.21-3.86 1.01 1.03-3.76-.24-.39a9.77 9.77 0 01-1.5-5.18C2.14 6.39 6.65 1.88 12.07 1.88c2.61 0 5.07 1.02 6.92 2.87a9.7 9.7 0 012.85 6.91c0 5.42-4.41 9.84-9.77 9.84zm5.38-7.38c-.29-.14-1.73-.85-2-.94-.27-.1-.47-.14-.67.14-.2.29-.77.94-.94 1.13-.17.2-.35.22-.64.08-.29-.14-1.24-.46-2.36-1.47-.87-.77-1.46-1.72-1.63-2-.17-.29-.02-.44.12-.58.13-.13.29-.35.43-.52.14-.17.19-.29.29-.49.1-.2.05-.37-.02-.52-.07-.14-.67-1.61-.92-2.21-.24-.58-.49-.5-.67-.5h-.57c-.2 0-.52.07-.79.37-.27.29-1.04 1.01-1.04 2.47s1.06 2.87 1.21 3.07c.14.2 2.08 3.18 5.03 4.46.7.3 1.24.48 1.66.61.7.22 1.34.19 1.84.12.56-.08 1.73-.71 1.97-1.39.24-.68.24-1.27.17-1.39-.07-.12-.27-.2-.56-.34z"/>
+          </svg>
+       </a>
+
+       <!-- CART -->
+       <button
+         type="button"
+         onclick="toggleCart()"
+         aria-label="Cart"
+         class="relative flex h-11 w-11 items-center justify-center rounded-full bg-gradient-to-r from-pink-600 to-pink-500 text-white shadow-md transition hover:scale-105"
+       >
+        <!-- CART ICON -->
+        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" class="h-5 w-5">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-1.5 7h13M9 21a1 1 0 100-2 1 1 0 000 2zm8 0a1 1 0 100-2 1 1 0 000 2z"/>
+        </svg>
+
+        <!-- COUNT -->
+        <span
+          id="cartCount"
+          class="absolute -right-1 -top-1 inline-flex h-5 min-w-5 items-center justify-center rounded-full bg-white px-1 text-[10px] font-bold text-pink-600 shadow"
+        >
+          0
+        </span>
+       </button>
+
+      </div>
+    </div>
+  </header>
+
+  <main>
+    <section class="relative overflow-hidden">
+      <div class="absolute left-0 top-0 h-72 w-72 rounded-full bg-pink-200/30 blur-3xl"></div>
+      <div class="absolute bottom-8 right-0 h-80 w-80 rounded-full bg-rose-100/60 blur-3xl"></div>
+
+      <div class="mx-auto grid max-w-7xl items-center gap-12 px-4 py-14 sm:px-6 lg:grid-cols-[1.05fr_0.95fr] lg:px-8 lg:py-20">
+        <div class="fade-up">
+         
+          <h2 class="mt-6 max-w-2xl text-4xl font-black leading-tight text-gray-900 sm:text-5xl lg:text-6xl">
+            Nails cantik dengan tampilan
+            <span class="bg-gradient-to-r from-pink-600 to-pink-600 bg-clip-text text-transparent">lebih premium & Elegant</span>
+          </h2>
+
+          <p class="mt-6 max-w-2xl text-lg leading-8 text-gray-600">
+            Welcome to Nema Nails. Pilih desain kuku favoritmu, booking appointment dengan cepat, lalu checkout langsung lewat WhatsApp dengan detail lengkap dan metode pembayaran pilihanmu.
+          </p>
+
+          <div class="mt-8 flex flex-wrap gap-4">
+            <a
+              href="#products"
+              class="inline-flex items-center rounded-full bg-gradient-to-r from-pink-600 to-pink-500 px-7 py-3.5 font-semibold text-white shadow-lg shadow-pink-200 transition hover:-translate-y-0.5 hover:from-pink-700 hover:to-pink-600"
+            >
+              Belanja Sekarang
+            </a>
+
+            <button
+              type="button"
+              onclick="openBooking()"
+              class="inline-flex items-center rounded-full border border-pink-300 bg-white/80 px-7 py-3.5 font-semibold text-pink-700 shadow-sm transition hover:border-pink-400 hover:bg-pink-50"
+            >
+              Book Appointment
+            </button>
+          </div>
+
+
+        </div>
+
+        <div class="hero-image-wrap fade-up">
+          <div class="soft-ring overflow-hidden rounded-[2rem] border border-white/60 bg-white/70 p-3">
+            <div class="relative overflow-hidden rounded-[1.7rem] bg-pink-100">
+              <img src="assets/pink-white0.JPG" alt="Nails Hero" class="h-[420px] w-full object-cover sm:h-[520px]" />
+              <div class="pointer-events-none absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/35 via-black/5 to-transparent p-6">
+                <div class="inline-flex rounded-full bg-white/85 px-4 py-2 text-sm font-semibold text-gray-800 backdrop-blur">
+                  Signature Nail Collection
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="booking" class="py-16 lg:py-20">
+      <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+        <div class="grid gap-8 lg:grid-cols-[1.1fr_0.9fr] lg:items-center">
+          <div class="glass-card rounded-[2rem] p-8 sm:p-10">
+            <p class="section-title text-sm font-semibold uppercase text-pink-600">Appointment</p>
+            <h2 class="mt-3 text-3xl font-black text-gray-900 md:text-4xl">Book your nail session</h2>
+            <p class="mt-4 max-w-2xl text-lg leading-8 text-gray-600">
+              Mau treatment atau custom nail art? Booking dulu biar admin bisa atur jadwal kamu dengan lebih cepat, rapi, dan nyaman.
+            </p>
+
+            <div class="mt-8 grid gap-4 sm:grid-cols-2">
+              <div class="booking-side-card rounded-3xl border border-pink-100 p-5 shadow-sm">
+                <h3 class="font-bold text-gray-900">Nail Art</h3>
+                <p class="mt-2 text-sm leading-6 text-gray-600">Desain kuku cantik sesuai style yang kamu suka.</p>
+              </div>
+
+              <div class="booking-side-card rounded-3xl border border-pink-100 p-5 shadow-sm">
+                <h3 class="font-bold text-gray-900">Manicure</h3>
+                <p class="mt-2 text-sm leading-6 text-gray-600">Perawatan kuku tangan biar lebih bersih dan rapi.</p>
+              </div>
+
+              <div class="booking-side-card rounded-3xl border border-pink-100 p-5 shadow-sm">
+                <h3 class="font-bold text-gray-900">Pedicure</h3>
+                <p class="mt-2 text-sm leading-6 text-gray-600">Perawatan kuku kaki untuk tampilan yang lebih fresh.</p>
+              </div>
+
+              <div class="booking-side-card rounded-3xl border border-pink-100 p-5 shadow-sm">
+                <h3 class="font-bold text-gray-900">Custom Design</h3>
+                <p class="mt-2 text-sm leading-6 text-gray-600">Bisa request desain nail khusus sesuai keinginanmu kamu.</p>
+              </div>
+            </div>
+          </div>
+
+          <div class="glass-card rounded-[2rem] p-8 shadow-lg shadow-pink-100 sm:p-10">
+            <p class="section-title text-sm font-semibold uppercase text-pink-600">Quick Booking</p>
+            <h3 class="mt-3 text-2xl font-black text-gray-900">Reservasi cepat</h3>
+            <p class="mt-3 leading-7 text-gray-600">Klik tombol di bawah untuk isi form appointment dan kirim detail booking langsung ke admin via WhatsApp untuk daerah BOJONEGORO only yaaa.</p>
+
+            <div class="mt-8 space-y-4">
+              <div class="rounded-3xl border border-pink-100 bg-white/80 p-4">
+                <p class="text-sm font-semibold text-gray-900">Kenapa booking dulu?</p>
+                <p class="mt-2 text-sm leading-6 text-gray-600">Biar jadwal lebih tertata dan admin bisa siapin layanan sesuai request kamu.</p>
+              </div>
+
+              <button
+                type="button"
+                onclick="openBooking()"
+                class="w-full rounded-full bg-gradient-to-r from-pink-600 to-pink-500 px-7 py-3.5 font-semibold text-white shadow-lg shadow-pink-200 transition hover:-translate-y-0.5 hover:from-pink-700 hover:to-pink-600"
+              >
+                Open Booking Form
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="products" class="py-16 lg:py-20">
+      <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+        <div class="text-center">
+          <p class="section-title text-sm font-semibold uppercase text-pink-600">Featured Products</p>
+          <h2 class="mt-3 text-3xl font-black text-gray-900 md:text-4xl">All Nail Collections</h2>
+          <p class="mx-auto mt-4 max-w-2xl text-gray-600">Cara mencari produk cukup klik atau cari di search bar, contoh tulis (pink) nanti semua product dengan kategori pink akan muncul.</p>
+
+          <div class="mx-auto mt-8 flex max-w-md justify-center">
+            <label class="group flex w-full items-center gap-3 rounded-full border border-pink-200/80 bg-white/95 px-5 py-3 shadow-lg shadow-pink-100/50 transition duration-300 focus-within:border-pink-400 focus-within:shadow-pink-200">
+              <svg xmlns="http://www.w3.org/2000/svg" class="size-5 text-pink-400 transition group-focus-within:text-pink-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-4.35-4.35m1.85-5.15a7 7 0 11-14 0 7 7 0 0114 0z" />
+              </svg>
+              <input
+                id="searchInput"
+                type="text"
+                placeholder="Cari produk favorit..."
+                class="w-full bg-transparent text-base text-gray-700 outline-none placeholder:text-gray-400"
+              />
+            </label>
+          </div>
+        </div>
+
+        <div id="productGrid" class="mt-12 grid gap-8 sm:grid-cols-2 xl:grid-cols-4">
+          <article class="product-card overflow-hidden rounded-[2rem] border border-pink-100 bg-white/90 shadow-sm" data-name="Blue silver elegance blue silver kuku nail">
+            <div class="overflow-hidden">
+              <img src="assets/blue0.PNG" alt="Blue Silver Elegance" class="product-image h-72 w-full object-cover" />
+            </div>
+            <div class="p-6">
+              <div class="mb-4 flex items-start justify-between gap-3">
+                <div>
+                  <h3 class="text-xl font-black text-gray-900">Blue Silver Elegance</h3>
+                  <p class="mt-1 text-sm text-pink-500">Pearl series</p>
+                </div>
+                <span class="rounded-full bg-pink-50 px-3 py-1 text-xs font-semibold text-pink-700">Premium</span>
+              </div>
+              <p class="text-sm leading-6 text-gray-600">Kombinasi warna biru lembut dengan aksen silver yang elegan.Memberikan tampilan modern dan berkelas.</p>
+              <div class="mt-5 flex items-center justify-between gap-3">
+                <p class="text-lg font-black text-pink-600">Rp 150.000</p>
+                <button
+                  type="button"
+                  onclick="addToCart('Soft Pink Elegance', 150000, this)"
+                  class="rounded-full bg-gradient-to-r from-pink-600 to-pink-500 px-5 py-2.5 text-sm font-semibold text-white transition hover:from-pink-700 hover:to-pink-600"
+                >
+                  Add to Cart
+                </button>
+              </div>
+            </div>
+          </article>
+
+          <article class="product-card overflow-hidden rounded-[2rem] border border-pink-100 bg-white/90 shadow-sm" data-name="Brown marble elegance brown marble kuku nail">
+            <div class="overflow-hidden">
+              <img src="assets/brown-white0.JPG" alt="Brown Marble Elegance" class="product-image h-72 w-full object-cover" />
+            </div>
+            <div class="p-6">
+              <div class="mb-4 flex items-start justify-between gap-3">
+                <div>
+                  <h3 class="text-xl font-black text-gray-900">Brown Marble Elegance</h3>
+                  <p class="mt-1 text-sm text-pink-500">Pearl series</p>
+                </div>
+                <span class="rounded-full bg-pink-50 px-3 py-1 text-xs font-semibold text-pink-700">Premium</span>
+              </div>
+              <p class="text-sm leading-6 text-gray-600">Kombinasi warna coklat dengan detail marble dan aksen halus.Memberikan tampilan hangat, elegan, dan modern.</p>
+              <div class="mt-5 flex items-center justify-between gap-3">
+                <p class="text-lg font-black text-pink-600">Rp 150.000</p>
+                <button
+                  type="button"
+                  onclick="addToCart('Brown Marble Elegance', 150000, this)"
+                  class="rounded-full bg-gradient-to-r from-pink-600 to-pink-500 px-5 py-2.5 text-sm font-semibold text-white transition hover:from-pink-700 hover:to-pink-600"
+                >
+                  Add to Cart
+                </button>
+              </div>
+            </div>
+          </article>
+
+          <article class="product-card overflow-hidden rounded-[2rem] border border-pink-100 bg-white/90 shadow-sm" data-name="Red pink shine red pink kuku nail">
+            <div class="overflow-hidden">
+              <img src="assets/red-pink1.PNG" alt="Red Pink Shine" class="product-image h-72 w-full object-cover" />
+            </div>
+            <div class="p-6">
+              <div class="mb-4 flex items-start justify-between gap-3">
+                <div>
+                  <h3 class="text-xl font-black text-gray-900">Red Pink Shine</h3>
+                  <p class="mt-1 text-sm text-pink-500">Shine series</p>
+                </div>
+                <span class="rounded-full bg-pink-50 px-3 py-1 text-xs font-semibold text-pink-700">Premium</span>
+              </div>
+              <p class="text-sm leading-6 text-gray-600"> Kombinasi warna merah dan pink dengan efek glossy dan shimmer halus.Memberikan tampilan elegan dan modern.</p>
+              <div class="mt-5 flex items-center justify-between gap-3">
+                <p class="text-lg font-black text-pink-600">Rp 150.000</p>
+                <button
+                  type="button"
+                  onclick="addToCart('Red Pink Shine', 150000, this)"
+                  class="rounded-full bg-gradient-to-r from-pink-600 to-pink-500 px-5 py-2.5 text-sm font-semibold text-white transition hover:from-pink-700 hover:to-pink-600"
+                >
+                  Add to Cart
+                </button>
+              </div>
+            </div>
+          </article>
+
+          <article class="product-card overflow-hidden rounded-[2rem] border border-pink-100 bg-white/90 shadow-sm" data-name="Red floral elegance red floral kuku nail">
+            <div class="overflow-hidden">
+              <img src="assets/red0.JPEG" alt="Red Floral Elegance" class="product-image h-72 w-full object-cover" />
+            </div>
+            <div class="p-6">
+              <div class="mb-4 flex items-start justify-between gap-3">
+                <div>
+                  <h3 class="text-xl font-black text-gray-900">Red Floral Elegance</h3>
+                  <p class="mt-1 text-sm text-pink-500">Floral series</p>
+                </div>
+                <span class="rounded-full bg-pink-50 px-3 py-1 text-xs font-semibold text-pink-700">Premium</span>
+              </div>
+              <p class="text-sm leading-6 text-gray-600">Warna merah glossy dipadukan dengan detail floral yang halus.Memberikan tampilan feminin dan elegan.</p>
+              <div class="mt-5 flex items-center justify-between gap-3">
+                <p class="text-lg font-black text-pink-600">Rp 150.000</p>
+                <button
+                  type="button"
+                  onclick="addToCart('Red Floral Elegance', 150000, this)"
+                  class="rounded-full bg-gradient-to-r from-pink-600 to-pink-500 px-5 py-2.5 text-sm font-semibold text-white transition hover:from-pink-700 hover:to-pink-600"
+                >
+                  Add to Cart
+                </button>
+              </div>
+            </div>
+          </article>
+
+          <article class="product-card overflow-hidden rounded-[2rem] border border-pink-100 bg-white/90 shadow-sm" data-name="Pastel floral soft pastel floral kuku nail">
+            <div class="overflow-hidden">
+              <img src="assets/pink-blue1.JPG" alt="Pastel Floral Soft" class="product-image h-72 w-full object-cover" />
+            </div>
+            <div class="p-6">
+              <div class="mb-4 flex items-start justify-between gap-3">
+                <div>
+                  <h3 class="text-xl font-black text-gray-900">Pastel Floral Soft</h3>
+                  <p class="mt-1 text-sm text-pink-500">Floral series</p>
+                </div>
+                <span class="rounded-full bg-pink-50 px-3 py-1 text-xs font-semibold text-pink-700">Premium</span>
+              </div>
+              <p class="text-sm leading-6 text-gray-600">Kombinasi warna pastel dengan detail bunga dan aksen lembut.Memberikan tampilan ringan, feminin, dan elegan</p>
+              <div class="mt-5 flex items-center justify-between gap-3">
+                <p class="text-lg font-black text-pink-600">Rp 150.000</p>
+                <button
+                  type="button"
+                  onclick="addToCart('Pastel Floral Soft', 150000, this)"
+                  class="rounded-full bg-gradient-to-r from-pink-600 to-pink-500 px-5 py-2.5 text-sm font-semibold text-white transition hover:from-pink-700 hover:to-pink-600"
+                >
+                  Add to Cart
+                </button>
+              </div>
+            </div>
+          </article>
+
+          <article class="product-card overflow-hidden rounded-[2rem] border border-pink-100 bg-white/90 shadow-sm" data-name="Pastel flower elegance pastel flower kuku nail">
+            <div class="overflow-hidden">
+              <img src="assets/pink-blue.PNG" alt="Pastel Flower Elegance" class="product-image h-72 w-full object-cover" />
+            </div>
+            <div class="p-6">
+              <div class="mb-4 flex items-start justify-between gap-3">
+                <div>
+                  <h3 class="text-xl font-black text-gray-900">Pastel Flower Elegance</h3>
+                  <p class="mt-1 text-sm text-pink-500">Floral series</p>
+                </div>
+                <span class="rounded-full bg-pink-50 px-3 py-1 text-xs font-semibold text-pink-700">Premium</span>
+              </div>
+              <p class="text-sm leading-6 text-gray-600">Kombinasi warna pastel dengan detail bunga dan aksen lembut.Memberikan tampilan manis, bersih, dan elegan.</p>
+              <div class="mt-5 flex items-center justify-between gap-3">
+                <p class="text-lg font-black text-pink-600">Rp 150.000</p>
+                <button
+                  type="button"
+                  onclick="addToCart('Pastel Flower Elegance', 150000, this)"
+                  class="rounded-full bg-gradient-to-r from-pink-600 to-pink-500 px-5 py-2.5 text-sm font-semibold text-white transition hover:from-pink-700 hover:to-pink-600"
+                >
+                  Add to Cart
+                </button>
+              </div>
+            </div>
+          </article>
+          
+           <article class="product-card overflow-hidden rounded-[2rem] border border-pink-100 bg-white/90 shadow-sm" data-name="Dark brown shine dark brown kuku nail">
+            <div class="overflow-hidden">
+              <img src="assets/brown0.JPG" alt="Dark Brown Shine" class="product-image h-72 w-full object-cover" />
+            </div>
+            <div class="p-6">
+              <div class="mb-4 flex items-start justify-between gap-3">
+                <div>
+                  <h3 class="text-xl font-black text-gray-900">Dark Brown Shine</h3>
+                  <p class="mt-1 text-sm text-pink-500">Shine series</p>
+                </div>
+                <span class="rounded-full bg-pink-50 px-3 py-1 text-xs font-semibold text-pink-700">Premium</span>
+              </div>
+              <p class="text-sm leading-6 text-gray-600">Warna coklat gelap dengan efek glossy dan shimmer halus.Memberikan tampilan clean dan elegan.</p>
+              <div class="mt-5 flex items-center justify-between gap-3">
+                <p class="text-lg font-black text-pink-600">Rp 150.000</p>
+                <button
+                  type="button"
+                  onclick="addToCart('Dark Brown Shine', 150000, this)"
+                  class="rounded-full bg-gradient-to-r from-pink-600 to-pink-500 px-5 py-2.5 text-sm font-semibold text-white transition hover:from-pink-700 hover:to-pink-600"
+                >
+                  Add to Cart
+                </button>
+              </div>
+            </div>
+          </article>
+
+          <article class="product-card overflow-hidden rounded-[2rem] border border-pink-100 bg-white/90 shadow-sm" data-name="Nude pink butterfly nude pink kuku nail">
+            <div class="overflow-hidden">
+              <img src="assets/pink-white0.JPG" alt="Nude Pink Butterfly" class="product-image h-72 w-full object-cover" />
+            </div>
+            <div class="p-6">
+              <div class="mb-4 flex items-start justify-between gap-3">
+                <div>
+                  <h3 class="text-xl font-black text-gray-900">Nude Pink Butterfly</h3>
+                  <p class="mt-1 text-sm text-pink-500">Butterfly series</p>
+                </div>
+                <span class="rounded-full bg-pink-50 px-3 py-1 text-xs font-semibold text-pink-700">Signature</span>
+              </div>
+              <p class="text-sm leading-6 text-gray-600">Warna nude pink dengan detail butterfly yang halus.Memberikan tampilan lembut, feminin, dan elegan.</p>
+              <div class="mt-5 flex items-center justify-between gap-3">
+                <p class="text-lg font-black text-pink-600">Rp 150.000</p>
+                <button
+                  type="button"
+                  onclick="addToCart('Nude Pink Butterfly', 150000, this)"
+                  class="rounded-full bg-gradient-to-r from-pink-600 to-pink-500 px-5 py-2.5 text-sm font-semibold text-white transition hover:from-pink-700 hover:to-pink-600"
+                >
+                  Add to Cart
+                </button>
+              </div>
+            </div>
+          </article>
+
+          <article class="product-card overflow-hidden rounded-[2rem] border border-pink-100 bg-white/90 shadow-sm" data-name="Soft pink butterfly soft pink kuku nail">
+            <div class="overflow-hidden">
+              <img src="assets/pink0.PNG" alt="Soft Pink Butterfly" class="product-image h-72 w-full object-cover" />
+            </div>
+            <div class="p-6">
+              <div class="mb-4 flex items-start justify-between gap-3">
+                <div>
+                  <h3 class="text-xl font-black text-gray-900">Soft Pink Butterfly</h3>
+                  <p class="mt-1 text-sm text-pink-500">Butterfly series</p>
+                </div>
+                <span class="rounded-full bg-pink-50 px-3 py-1 text-xs font-semibold text-pink-700">Premium</span>
+              </div>
+              <p class="text-sm leading-6 text-gray-600">Warna pink lembut dengan detail butterfly dan efek shimmer halus.Memberikan tampilan ringan, feminin, dan elegan.</p>
+              <div class="mt-5 flex items-center justify-between gap-3">
+                <p class="text-lg font-black text-pink-600">Rp 150.000</p>
+                <button
+                  type="button"
+                  onclick="addToCart('Soft Pink Butterfly', 150000, this)"
+                  class="rounded-full bg-gradient-to-r from-pink-600 to-pink-500 px-5 py-2.5 text-sm font-semibold text-white transition hover:from-pink-700 hover:to-pink-600"
+                >
+                  Add to Cart
+                </button>
+              </div>
+            </div>
+          </article>
+
+          <article class="product-card overflow-hidden rounded-[2rem] border border-pink-100 bg-white/90 shadow-sm" data-name="Pink pearl elegance pink pearl kuku nail">
+            <div class="overflow-hidden">
+              <img src="assets/pink1.PNG" alt="Pink Pearl Elegance" class="product-image h-72 w-full object-cover" />
+            </div>
+            <div class="p-6">
+              <div class="mb-4 flex items-start justify-between gap-3">
+                <div>
+                  <h3 class="text-xl font-black text-gray-900">Pink Pearl Elegance</h3>
+                  <p class="mt-1 text-sm text-pink-500">Pearl Series</p>
+                </div>
+                <span class="rounded-full bg-pink-50 px-3 py-1 text-xs font-semibold text-pink-700">Premium</span>
+              </div>
+              <p class="text-sm leading-6 text-gray-600">Warna pink lembut dengan aksen pearl dan detail elegan.Memberikan tampilan bersih, feminin, dan berkelas.</p>
+              <div class="mt-5 flex items-center justify-between gap-3">
+                <p class="text-lg font-black text-pink-600">Rp 150.000</p>
+                <button
+                  type="button"
+                  onclick="addToCart('Pink Pearl Elegance', 150000, this)"
+                  class="rounded-full bg-gradient-to-r from-pink-600 to-pink-500 px-5 py-2.5 text-sm font-semibold text-white transition hover:from-pink-700 hover:to-pink-600"
+                >
+                  Add to Cart
+                </button>
+              </div>
+            </div>
+          </article>
+
+          <article class="product-card overflow-hidden rounded-[2rem] border border-pink-100 bg-white/90 shadow-sm" data-name="Red pink ribbon red pink kuku nail">
+            <div class="overflow-hidden">
+              <img src="assets/red-pink0.PNG" alt="Red Pink Ribbon" class="product-image h-72 w-full object-cover" />
+            </div>
+            <div class="p-6">
+              <div class="mb-4 flex items-start justify-between gap-3">
+                <div>
+                  <h3 class="text-xl font-black text-gray-900">Red Pink Ribbon</h3>
+                  <p class="mt-1 text-sm text-pink-500">Ribbon Series</p>
+                </div>
+                <span class="rounded-full bg-pink-50 px-3 py-1 text-xs font-semibold text-pink-700">Premium</span>
+              </div>
+              <p class="text-sm leading-6 text-gray-600">Kombinasi warna merah dan pink dengan detail ribbon yang halus.Memberikan tampilan manis dan tetap elegan.</p>
+              <div class="mt-5 flex items-center justify-between gap-3">
+                <p class="text-lg font-black text-pink-600">Rp 150.000</p>
+                <button
+                  type="button"
+                  onclick="addToCart('Red Pink Ribbon', 150000, this)"
+                  class="rounded-full bg-gradient-to-r from-pink-600 to-pink-500 px-5 py-2.5 text-sm font-semibold text-white transition hover:from-pink-700 hover:to-pink-600"
+                >
+                  Add to Cart
+                </button>
+              </div>
+            </div>
+          </article>
+
+          <article class="product-card overflow-hidden rounded-[2rem] border border-pink-100 bg-white/90 shadow-sm" data-name="Blue ribbon elegance blue ribbon kuku nail">
+            <div class="overflow-hidden">
+              <img src="assets/blueribbon.JPG" alt="Blue Ribbon Elegance" class="product-image h-72 w-full object-cover" />
+            </div>
+            <div class="p-6">
+              <div class="mb-4 flex items-start justify-between gap-3">
+                <div>
+                  <h3 class="text-xl font-black text-gray-900">Blue Ribbon Elegance</h3>
+                  <p class="mt-1 text-sm text-pink-500">Ribbon Series</p>
+                </div>
+                <span class="rounded-full bg-pink-50 px-3 py-1 text-xs font-semibold text-pink-700">Premium</span>
+              </div>
+              <p class="text-sm leading-6 text-gray-600">Warna biru lembut dengan detail ribbon dan aksen silver.Memberikan tampilan bersih, modern, dan tetap elegan</p>
+              <div class="mt-5 flex items-center justify-between gap-3">
+                <p class="text-lg font-black text-pink-600">Rp 150.000</p>
+                <button
+                  type="button"
+                  onclick="addToCart('Blue Ribbon Elegance', 150000, this)"
+                  class="rounded-full bg-gradient-to-r from-pink-600 to-pink-500 px-5 py-2.5 text-sm font-semibold text-white transition hover:from-pink-700 hover:to-pink-600"
+                >
+                  Add to Cart
+                </button>
+              </div>
+            </div>
+          </article>
+        </div>
+
+        <p id="noResults" class="mt-8 hidden text-center text-gray-500">Produk tidak ditemukan hubungi admin untuk informasi lebih lanjut.</p>
+      </div>
+    </section>
+
+    <div id="bookingOverlay" class="fixed inset-0 z-[60] hidden bg-black/45 backdrop-blur-[2px]" onclick="closeBooking()"></div>
+
+    <div
+      id="bookingModal"
+      class="modal-card fixed left-1/2 top-1/2 z-[70] hidden max-h-[90vh] w-[92%] max-w-2xl -translate-x-1/2 -translate-y-1/2 overflow-y-auto rounded-[2rem] border border-pink-100 p-6 shadow-2xl sm:p-8"
+    >
+      <div class="flex items-center justify-between gap-4">
+        <div>
+          <p class="text-sm font-semibold uppercase tracking-[0.18em] text-pink-500">Appointment Form</p>
+          <h3 class="mt-1 text-2xl font-black text-gray-900">Book Appointment</h3>
+        </div>
+        <button type="button" onclick="closeBooking()" aria-label="Tutup booking" class="rounded-full bg-pink-50 px-3 py-1 text-2xl text-gray-500 transition hover:bg-pink-100 hover:text-pink-600">×</button>
+      </div>
+
+      <p class="mt-2 text-sm leading-6 text-gray-500">Isi data di bawah untuk booking appointment.</p>
+
+      <div class="mt-6 grid gap-4 sm:grid-cols-2">
+        <input id="bookName" type="text" placeholder="Nama lengkap" class="w-full rounded-2xl border border-pink-200 bg-white px-4 py-3 outline-none transition focus:border-pink-400 focus:ring-4 focus:ring-pink-100" />
+        <input id="bookPhone" type="text" placeholder="Nomor WhatsApp" class="w-full rounded-2xl border border-pink-200 bg-white px-4 py-3 outline-none transition focus:border-pink-400 focus:ring-4 focus:ring-pink-100" />
+
+        <select id="bookService" class="sm:col-span-2 w-full rounded-2xl border border-pink-200 bg-white px-4 py-3 outline-none transition focus:border-pink-400 focus:ring-4 focus:ring-pink-100">
+          <option value="">Pilih layanan</option>
+          <option value="Nail Art">Nail Art</option>
+          <option value="Manicure">Manicure</option>
+          <option value="Pedicure">Pedicure</option>
+          <option value="Custom Design">Custom Design</option>
+        </select>
+        
+      <div class="ios-date-wrap w-full">
+        <input
+          id="bookDate"
+          type="date"
+          class="ios-date-input w-full rounded-2xl border border-pink-200 bg-white px-4 py-3 pr-12 text-gray-700 outline-none transition focus:border-pink-400 focus:ring-4 focus:ring-pink-100"
+        />
+        <span class="ios-date-icon">📅</span>
+      </div>
+
+        <select id="bookTime" class="w-full rounded-2xl border border-pink-200 bg-white px-4 py-3 outline-none transition focus:border-pink-400 focus:ring-4 focus:ring-pink-100">
+          <option value="">Pilih jam</option>
+          <option value="09:00">09:00</option>
+          <option value="10:00">10:00</option>
+          <option value="11:00">11:00</option>
+          <option value="12:00">12:00</option>
+          <option value="13:00">13:00</option>
+          <option value="14:00">14:00</option>
+          <option value="15:00">15:00</option>
+          <option value="16:00">16:00</option>
+          <option value="17:00">17:00</option>
+        </select>
+
+        <textarea id="bookNote" placeholder="Catatan tambahan / referensi desain" class="sm:col-span-2 min-h-28 w-full rounded-2xl border border-pink-200 bg-white px-4 py-3 outline-none transition focus:border-pink-400 focus:ring-4 focus:ring-pink-100"></textarea>
+      </div>
+
+      <div class="mt-6 flex flex-col gap-3 sm:flex-row">
+        <button
+          type="button"
+          onclick="closeBooking()"
+          class="w-full rounded-full border border-pink-200 bg-white px-5 py-3 font-semibold text-gray-700 transition hover:bg-pink-50"
+        >
+          Batal
+        </button>
+
+        <button
+          type="button"
+          onclick="sendBookingWhatsApp()"
+          class="w-full rounded-full bg-gradient-to-r from-pink-600 to-pink-500 px-5 py-3 font-semibold text-white shadow-lg shadow-pink-200 transition hover:from-pink-700 hover:to-pink-600"
+        >
+          Kirim Booking
+        </button>
+      </div>
+    </div>
+
+    <div
+      id="cartOverlay"
+      class="cart-overlay-hide fixed inset-0 z-40 bg-black/45 backdrop-blur-[2px] transition-opacity duration-300"
+      onclick="closeCart()"
+    ></div>
+
+    <aside
+      id="cartPanel"
+      class="cart-panel-enter hide-scrollbar fixed right-0 top-0 z-50 flex h-full w-full max-w-md flex-col overflow-y-auto border-l border-pink-100 bg-white shadow-2xl transition-all duration-300"
+    >
+      <div class="border-b border-pink-100 bg-gradient-to-r from-pink-50 to-white px-5 py-5">
+        <div class="flex items-center justify-between">
+          <div>
+            <p class="text-xs font-semibold uppercase tracking-[0.18em] text-pink-500">Shopping Cart</p>
+            <h3 class="mt-1 text-2xl font-black text-gray-900">Your Cart</h3>
+          </div>
+          <button type="button" onclick="closeCart()" aria-label="Tutup cart" class="rounded-full bg-white px-3 py-1 text-2xl text-gray-500 shadow-sm transition hover:text-pink-600">×</button>
+        </div>
+      </div>
+
+      <div class="flex-1 p-5">
+        <div id="cartItems" class="space-y-3">
+          <p class="text-sm text-gray-500">Keranjang masih kosong.</p>
+        </div>
+
+        <div class="checkout-box mt-6 rounded-3xl border border-pink-100 p-4">
+          <div class="flex items-center justify-between">
+            <span class="font-medium text-gray-700">Subtotal</span>
+            <span id="cartTotal" class="text-lg font-black text-pink-600">Rp 0</span>
+          </div>
+        </div>
+
+        <div class="mt-6 rounded-[1.6rem] border border-pink-100 bg-pink-50/55 p-5">
+          <h4 class="text-lg font-black text-gray-900">Data Checkout</h4>
+          <div class="mt-4 space-y-3">
+            <input id="customerName" type="text" placeholder="Nama lengkap" class="w-full rounded-2xl border border-pink-200 bg-white px-4 py-3 outline-none transition focus:border-pink-400 focus:ring-4 focus:ring-pink-100" />
+            <input id="customerPhone" type="text" placeholder="Nomor WhatsApp" class="w-full rounded-2xl border border-pink-200 bg-white px-4 py-3 outline-none transition focus:border-pink-400 focus:ring-4 focus:ring-pink-100" />
+            <textarea id="customerAddress" placeholder="Alamat lengkap" class="min-h-24 w-full rounded-2xl border border-pink-200 bg-white px-4 py-3 outline-none transition focus:border-pink-400 focus:ring-4 focus:ring-pink-100"></textarea>
+            <textarea id="customerNote" placeholder="Catatan pesanan (opsional)" class="min-h-20 w-full rounded-2xl border border-pink-200 bg-white px-4 py-3 outline-none transition focus:border-pink-400 focus:ring-4 focus:ring-pink-100"></textarea>
+          </div>
+        </div>
+
+        <div class="mt-6 rounded-[1.6rem] border border-pink-100 bg-pink-50/55 p-5">
+          <h4 class="text-lg font-black text-gray-900">Metode Pembayaran</h4>
+
+          <div class="mt-4 grid gap-3">
+            <button
+              type="button"
+              class="payment-card rounded-2xl border border-pink-200 bg-white p-4 text-left transition hover:bg-pink-50"
+              onclick="selectPayment('Bank Transfer', this)"
+            >
+              <div class="font-semibold text-gray-900">Bank Transfer</div>
+              <p class="mt-1 text-sm leading-6 text-gray-500">Transfer ke rekening admin setelah checkout.</p>
+            </button>
+
+            <button
+              type="button"
+              class="payment-card rounded-2xl border border-pink-200 bg-white p-4 text-left transition hover:bg-pink-50"
+              onclick="selectPayment('QRIS', this)"
+            >
+              <div class="font-semibold text-gray-900">QRIS</div>
+              <p class="mt-1 text-sm leading-6 text-gray-500">Bayar menggunakan scan QRIS.</p>
+            </button>
+          </div>
+
+          <div id="paymentInfo" class="mt-4 hidden rounded-2xl border border-pink-100 bg-white p-4 text-sm leading-6 text-gray-600"></div>
+        </div>
+
+        <button
+          type="button"
+          onclick="checkoutWhatsApp()"
+          class="mt-6 w-full rounded-full bg-gradient-to-r from-pink-600 to-pink-500 px-5 py-3.5 font-semibold text-white shadow-lg shadow-pink-200 transition hover:from-pink-700 hover:to-pink-600"
+        >
+          Checkout via WhatsApp
+        </button>
+      </div>
+    </aside>
+
+    <section class="py-16 lg:py-20">
+      <div class="mx-auto max-w-5xl px-4 sm:px-6 lg:px-8">
+        <div class="overflow-hidden rounded-[2.2rem] bg-gradient-to-r from-pink-600 via-pink-500 to-rose-400 px-6 py-12 text-center shadow-2xl shadow-pink-200 sm:px-10">
+          <h2 class="text-3xl font-black text-white md:text-4xl">Jika List Product Di Atas Tidak Ada</h2>
+          <p class="mx-auto mt-4 max-w-2xl text-pink-100">Hubungi admin kami untuk informasi lebih lanjut, custom request, atau konsultasi desain kuku yang kamu inginkan.</p>
+          <a
+            href="https://wa.me/6283815423269?text=Halo%20Nema%20Saya%20Mau%20Tanya%20Produk"
+            target="_blank"
+            class="mt-8 inline-flex rounded-full bg-white px-8 py-3 font-bold text-pink-600 transition hover:-translate-y-0.5 hover:bg-pink-50"
+          >
+            Chat via WhatsApp
+          </a>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer id="contact" class="mt-4 bg-gray-950 text-white">
+    <div class="mx-auto max-w-7xl px-4 py-16 sm:px-6 lg:px-8">
+      <div class="grid gap-10 md:grid-cols-3">
+        <div>
+          <div class="flex items-center gap-3">
+            <img src="assets/Logo-Nema.PNG" alt="Logo Nema Nails" class="h-14 w-auto object-contain" />
+            <div>
+              <h3 class="text-xl font-black text-pink-300">Nema Nails</h3>
+              <p class="text-sm text-gray-400">Beauty & Nail Collection</p>
+            </div>
+          </div>
+          <p class="mt-5 max-w-sm leading-7 text-gray-400">
+            Toko kuku cantik dengan berbagai pilihan desain modern, elegan, dan menarik untuk semua gaya.
+          </p>
+        </div>
+
+        <div>
+          <h4 class="text-lg font-semibold text-white">Quick Links</h4>
+          <ul class="mt-5 space-y-3 text-gray-400">
+            <li><a href="#booking" class="transition hover:text-pink-300">Booking</a></li>
+            <li><a href="#products" class="transition hover:text-pink-300">Products</a></li>
+            <li><a href="#contact" class="transition hover:text-pink-300">Contact</a></li>
+          </ul>
+        </div>
+
+        <div>
+          <h4 class="text-lg font-semibold text-white">Contact</h4>
+          <ul class="mt-5 space-y-3 text-gray-400">
+            <li>WhatsApp: 0838-1542-3269</li>
+            <li>TikTok: @nema.nailsudio</li>
+            <li>Instagram: @nema.nailstudio</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="mt-12 border-t border-white/10 pt-6 text-center text-sm text-gray-500">
+        © 2026 Nema Nails. All rights reserved.
+      </div>
+    </div>
+  </footer>
+
+  <script>
+    const STORAGE_KEY = "nema_nails_cart_v3";
+    const ADMIN_PHONE = "6283815423269";
+
+    let cart = [];
+    let selectedPayment = "";
+
+    const el = {
+      searchInput: document.getElementById("searchInput"),
+      productCards: document.querySelectorAll(".product-card"),
+      noResults: document.getElementById("noResults"),
+      cartPanel: document.getElementById("cartPanel"),
+      cartOverlay: document.getElementById("cartOverlay"),
+      cartItems: document.getElementById("cartItems"),
+      cartTotal: document.getElementById("cartTotal"),
+      cartCount: document.getElementById("cartCount"),
+      paymentInfo: document.getElementById("paymentInfo"),
+      bookingModal: document.getElementById("bookingModal"),
+      bookingOverlay: document.getElementById("bookingOverlay"),
+      bookDate: document.getElementById("bookDate")
+    };
+
+    function formatRupiah(number) {
+      return "Rp " + number.toLocaleString("id-ID");
+    }
+
+    function saveCart() {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(cart));
+    }
+
+    function loadCart() {
+      try {
+        const savedCart = localStorage.getItem(STORAGE_KEY);
+        cart = savedCart ? JSON.parse(savedCart) : [];
+        cart = cart.map(item => ({ ...item, size: item.size || "M" }));
+      } catch {
+        cart = [];
+      }
+      renderCart();
+    }
+
+    function openBooking() {
+      el.bookingModal.classList.remove("hidden");
+      el.bookingOverlay.classList.remove("hidden");
+      document.body.classList.add("overflow-hidden");
+    }
+
+    function closeBooking() {
+      el.bookingModal.classList.add("hidden");
+      el.bookingOverlay.classList.add("hidden");
+      document.body.classList.remove("overflow-hidden");
+    }
+
+    function sendBookingWhatsApp() {
+      const name = document.getElementById("bookName").value.trim();
+      const phone = document.getElementById("bookPhone").value.trim();
+      const service = document.getElementById("bookService").value;
+      const date = document.getElementById("bookDate").value;
+      const time = document.getElementById("bookTime").value;
+      const note = document.getElementById("bookNote").value.trim();
+
+      if (!name || !phone || !service || !date || !time) {
+        alert("Lengkapi data booking dulu ya.");
+        return;
+      }
+
+      let message = "Halo Nema, saya ingin booking appointment:%0A%0A";
+      message += `Nama: ${encodeURIComponent(name)}%0A`;
+      message += `Nomor WA: ${encodeURIComponent(phone)}%0A`;
+      message += `Layanan: ${encodeURIComponent(service)}%0A`;
+      message += `Tanggal: ${encodeURIComponent(date)}%0A`;
+      message += `Jam: ${encodeURIComponent(time)}%0A`;
+
+      if (note) {
+        message += `Catatan: ${encodeURIComponent(note)}%0A`;
+      }
+
+      window.open(`https://wa.me/${ADMIN_PHONE}?text=${message}`, "_blank");
+      closeBooking();
+    }
+
+    function toggleCart() {
+      el.cartPanel.classList.contains("cart-panel-open") ? closeCart() : openCart();
+    }
+
+    function openCart() {
+      el.cartPanel.classList.add("cart-panel-open");
+      el.cartPanel.classList.remove("cart-panel-enter");
+      el.cartOverlay.classList.add("cart-overlay-show");
+      el.cartOverlay.classList.remove("cart-overlay-hide");
+      document.body.classList.add("overflow-hidden");
+    }
+
+    function closeCart() {
+      el.cartPanel.classList.remove("cart-panel-open");
+      el.cartPanel.classList.add("cart-panel-enter");
+      el.cartOverlay.classList.remove("cart-overlay-show");
+      el.cartOverlay.classList.add("cart-overlay-hide");
+      if (el.bookingModal.classList.contains("hidden")) {
+        document.body.classList.remove("overflow-hidden");
+      }
+    }
+
+    function addToCart(name, price, button) {
+      const existingItem = cart.find(item => item.name === name);
+
+      if (existingItem) {
+        existingItem.qty += 1;
+      } else {
+        cart.push({ name, price, qty: 1, size: "M" });
+      }
+
+      saveCart();
+      renderCart();
+
+      if (button) {
+        button.classList.add("btn-added");
+        button.textContent = "Added";
+
+        setTimeout(() => {
+          button.classList.remove("btn-added");
+          button.textContent = "Add to Cart";
+        }, 800);
+      }
+
+      el.cartCount.classList.add("cart-bounce");
+      setTimeout(() => el.cartCount.classList.remove("cart-bounce"), 400);
+    }
+
+    function removeFromCart(name) {
+      cart = cart.filter(item => item.name !== name);
+      saveCart();
+      renderCart();
+    }
+
+    function changeQty(name, change) {
+      const item = cart.find(entry => entry.name === name);
+      if (!item) return;
+
+      item.qty += change;
+
+      if (item.qty <= 0) {
+        cart = cart.filter(entry => entry.name !== name);
+      }
+
+      saveCart();
+      renderCart();
+    }
+
+    function changeSize(name, newSize) {
+      const item = cart.find(entry => entry.name === name);
+      if (!item) return;
+
+      item.size = newSize;
+      saveCart();
+      renderCart();
+    }
+
+    function renderCart() {
+      if (cart.length === 0) {
+        el.cartItems.innerHTML = `
+          <div class="rounded-3xl border border-dashed border-pink-200 bg-pink-50/60 p-5 text-center">
+            <p class="font-semibold text-gray-700">Keranjang masih kosong.</p>
+            <p class="mt-1 text-sm text-gray-500">Tambahkan produk favoritmu dulu ya.</p>
+          </div>
+        `;
+        el.cartTotal.textContent = "Rp 0";
+        el.cartCount.textContent = "0";
+        return;
+      }
+
+      let total = 0;
+      let totalQty = 0;
+
+      el.cartItems.innerHTML = cart.map(item => {
+        const subtotal = item.price * item.qty;
+        total += subtotal;
+        totalQty += item.qty;
+        const safeName = item.name.replace(/'/g, "\\'");
+
+        return `
+          <div class="rounded-3xl border border-pink-100 bg-white p-4 shadow-sm transition hover:shadow-md">
+            <div class="flex items-start justify-between gap-3">
+              <div>
+                <h4 class="font-bold text-gray-900">${item.name}</h4>
+                <p class="mt-1 text-sm text-gray-500">${formatRupiah(item.price)}</p>
+              </div>
+              <button type="button" onclick="removeFromCart('${safeName}')" class="text-sm font-medium text-red-500 transition hover:text-red-600">
+                Hapus
+              </button>
+            </div>
+
+            <div class="mt-4 rounded-2xl border border-pink-100 bg-pink-50/60 p-3">
+              <div class="flex items-center justify-between gap-3">
+                <span class="text-sm font-semibold text-gray-700">Ukuran Kuku</span>
+                <div class="flex items-center gap-2">
+                  <button type="button" onclick="changeSize('${safeName}', 'S')" class="size-chip rounded-full border px-3 py-1 text-xs font-semibold ${item.size === 'S' ? 'active border-pink-600' : 'border-pink-200 bg-white text-pink-700'}">
+                    S
+                  </button>
+                  <button type="button" onclick="changeSize('${safeName}', 'M')" class="size-chip rounded-full border px-3 py-1 text-xs font-semibold ${item.size === 'M' ? 'active border-pink-600' : 'border-pink-200 bg-white text-pink-700'}">
+                    M
+                  </button>
+                  <button type="button" onclick="changeSize('${safeName}', 'L')" class="size-chip rounded-full border px-3 py-1 text-xs font-semibold ${item.size === 'L' ? 'active border-pink-600' : 'border-pink-200 bg-white text-pink-700'}">
+                    L
+                  </button>
+                </div>
+              </div>
+            </div>
+
+            <div class="mt-4 flex items-center justify-between gap-3">
+              <div class="flex items-center gap-2 rounded-full bg-pink-50 px-2 py-1">
+                <button type="button" onclick="changeQty('${safeName}', -1)" class="rounded-full bg-white px-3 py-1 text-pink-700 shadow-sm transition hover:bg-pink-100">-</button>
+                <span class="min-w-6 text-center font-semibold">${item.qty}</span>
+                <button type="button" onclick="changeQty('${safeName}', 1)" class="rounded-full bg-white px-3 py-1 text-pink-700 shadow-sm transition hover:bg-pink-100">+</button>
+              </div>
+
+              <p class="font-black text-pink-600">${formatRupiah(subtotal)}</p>
+            </div>
+          </div>
+        `;
+      }).join("");
+
+      el.cartTotal.textContent = formatRupiah(total);
+      el.cartCount.textContent = String(totalQty);
+    }
+
+    function selectPayment(method, button) {
+      selectedPayment = method;
+      document.querySelectorAll(".payment-card").forEach(card => card.classList.remove("active"));
+      button.classList.add("active");
+      el.paymentInfo.classList.remove("hidden");
+
+      if (method === "Bank Transfer") {
+        el.paymentInfo.innerHTML = `
+          <div class="font-semibold text-gray-900">Bank Transfer Dipilih</div>
+          <p class="mt-1">Bank BCA: 8640410788 a.n. Ivanza Fanggi Yolandha Hamdani</p>
+          <p class="mt-1">Konfirmasi pembayaran lewat WhatsApp setelah transfer.</p>
+        `;
+        return;
+      }
+
+      el.paymentInfo.innerHTML = `
+        <div class="font-semibold text-gray-900">QRIS Dipilih</div>
+        <p class="mt-1">Admin akan kirim QRIS setelah checkout.</p>
+        <p class="mt-1">Silakan scan QR dan kirim bukti pembayaran.</p>
+      `;
+    }
+
+    function checkoutWhatsApp() {
+      if (cart.length === 0) {
+        alert("Keranjang masih kosong.");
+        return;
+      }
+
+      const name = document.getElementById("customerName").value.trim();
+      const phone = document.getElementById("customerPhone").value.trim();
+      const address = document.getElementById("customerAddress").value.trim();
+      const note = document.getElementById("customerNote").value.trim();
+
+      if (!name || !phone || !address) {
+        alert("Isi nama, nomor WhatsApp, dan alamat dulu ya.");
+        return;
+      }
+
+      if (!selectedPayment) {
+        alert("Pilih metode pembayaran dulu ya.");
+        return;
+      }
+
+      let total = 0;
+      let message = "Halo Nema, saya ingin checkout pesanan:%0A%0A";
+      message += `Nama: ${encodeURIComponent(name)}%0A`;
+      message += `Nomor WA: ${encodeURIComponent(phone)}%0A`;
+      message += `Alamat: ${encodeURIComponent(address)}%0A`;
+      message += `Metode Pembayaran: ${encodeURIComponent(selectedPayment)}%0A`;
+
+      if (note) {
+        message += `Catatan: ${encodeURIComponent(note)}%0A`;
+      }
+
+      message += "%0ADetail Pesanan:%0A";
+
+      cart.forEach((item, index) => {
+        const subtotal = item.price * item.qty;
+        total += subtotal;
+        message += `${index + 1}. ${encodeURIComponent(item.name)} | Size ${encodeURIComponent(item.size)} x${item.qty} = ${encodeURIComponent(formatRupiah(subtotal))}%0A`;
+      });
+
+      message += `%0ATotal: ${encodeURIComponent(formatRupiah(total))}`;
+
+      if (selectedPayment === "Bank Transfer") {
+        message += "%0A%0ABank Transfer dipilih.";
+      } else {
+        message += "%0A%0AQRIS dipilih. Mohon kirim kode QR.";
+      }
+
+      window.open(`https://wa.me/${ADMIN_PHONE}?text=${message}`, "_blank");
+
+      cart = [];
+      selectedPayment = "";
+      saveCart();
+      renderCart();
+
+      document.getElementById("customerName").value = "";
+      document.getElementById("customerPhone").value = "";
+      document.getElementById("customerAddress").value = "";
+      document.getElementById("customerNote").value = "";
+
+      document.querySelectorAll(".payment-card").forEach(card => card.classList.remove("active"));
+      el.paymentInfo.classList.add("hidden");
+      el.paymentInfo.innerHTML = "";
+
+      closeCart();
+    }
+
+    el.searchInput.addEventListener("focus", () => {
+      document.getElementById("products").scrollIntoView({ behavior: "smooth" });
+    });
+
+    el.searchInput.addEventListener("input", function () {
+      const keyword = this.value.toLowerCase().trim();
+      let visibleCount = 0;
+
+      el.productCards.forEach(card => {
+        const productName = card.dataset.name.toLowerCase();
+        const isMatch = productName.includes(keyword);
+        card.classList.toggle("hidden", !isMatch);
+        if (isMatch) visibleCount += 1;
+      });
+
+      el.noResults.classList.toggle("hidden", visibleCount !== 0);
+    });
+
+    if (el.bookDate) {
+      const today = new Date();
+      const localDate = new Date(today.getTime() - (today.getTimezoneOffset() * 60000))
+        .toISOString()
+        .split("T")[0];
+
+      el.bookDate.setAttribute("min", localDate);
+    }
+
+    document.addEventListener("keydown", event => {
+      if (event.key === "Escape") {
+        closeBooking();
+        closeCart();
+      }
+    });
+
+    loadCart();
+    closeCart();
+  </script>
+</body>
+</html>

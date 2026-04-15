@@ -1,0 +1,962 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Nema Nails</title>
+  <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+
+  <style>
+    :root {
+      --pink-main: #db2777;
+      --pink-deep: #be185d;
+      --pink-soft: #fdf2f8;
+      --pink-line: #f3c4da;
+      --text-main: #1f2937;
+      --text-soft: #6b7280;
+    }
+
+    * { box-sizing: border-box; }
+
+    html, body {
+      margin: 0;
+      padding: 0;
+      scroll-behavior: smooth;
+      overflow-x: hidden;
+    }
+
+    body {
+      background:
+        radial-gradient(circle at top left, rgba(244, 114, 182, 0.12), transparent 22%),
+        radial-gradient(circle at bottom right, rgba(236, 72, 153, 0.12), transparent 25%),
+        linear-gradient(180deg, #fffafc 0%, #ffffff 18%, #fff7fb 100%);
+      color: var(--text-main);
+    }
+
+    #gallery {
+      perspective: 1500px;
+    }
+
+    #stackSlider {
+      position: relative;
+      width: 100%;
+      height: 100%;
+      transform-style: preserve-3d;
+    }
+
+    .glass-header {
+      background: rgba(255, 255, 255, 0.88);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+    }
+
+    .hero-glow::before,
+    .hero-glow::after {
+      content: "";
+      position: absolute;
+      border-radius: 9999px;
+      filter: blur(55px);
+      z-index: 0;
+      pointer-events: none;
+    }
+
+    .hero-glow::before {
+      width: 220px;
+      height: 220px;
+      right: -50px;
+      top: -40px;
+      background: rgba(244, 114, 182, 0.22);
+    }
+
+    .hero-glow::after {
+      width: 170px;
+      height: 170px;
+      left: -30px;
+      bottom: -20px;
+      background: rgba(251, 207, 232, 0.8);
+    }
+
+    .stack-slide {
+      transition:
+        transform 0.8s cubic-bezier(0.22, 1, 0.36, 1),
+        opacity 0.8s ease,
+        filter 0.8s ease;
+      transform-style: preserve-3d;
+      will-change: transform, opacity;
+    }
+
+    .stack-slide img {
+      transition:
+        transform 0.8s cubic-bezier(0.22, 1, 0.36, 1),
+        box-shadow 0.8s ease,
+        filter 0.8s ease;
+      backface-visibility: hidden;
+      border: 1px solid rgba(255,255,255,0.55);
+    }
+
+    .stack-slide.is-active {
+      transform: translateX(0) translateZ(150px) rotateY(0deg) scale(1);
+      opacity: 1;
+      z-index: 5;
+      filter: blur(0);
+    }
+
+    .stack-slide.is-active img {
+      box-shadow: 0 30px 70px rgba(15, 23, 42, 0.25);
+    }
+
+    .stack-slide.is-prev {
+      transform: translateX(-24%) translateZ(10px) rotateY(28deg) scale(0.88);
+      opacity: 0.78;
+      z-index: 4;
+      filter: blur(0.45px);
+    }
+
+    .stack-slide.is-prev img {
+      box-shadow: 0 18px 35px rgba(15, 23, 42, 0.17);
+      filter: brightness(0.93);
+    }
+
+    .stack-slide.is-next {
+      transform: translateX(24%) translateZ(10px) rotateY(-28deg) scale(0.88);
+      opacity: 0.78;
+      z-index: 4;
+      filter: blur(0.45px);
+    }
+
+    .stack-slide.is-next img {
+      box-shadow: 0 18px 35px rgba(15, 23, 42, 0.17);
+      filter: brightness(0.93);
+    }
+
+    .stack-slide.is-hidden-left {
+      transform: translateX(-48%) translateZ(-120px) rotateY(42deg) scale(0.72);
+      opacity: 0;
+      z-index: 1;
+      filter: blur(2px);
+      pointer-events: none;
+    }
+
+    .stack-slide.is-hidden-right {
+      transform: translateX(48%) translateZ(-120px) rotateY(-42deg) scale(0.72);
+      opacity: 0;
+      z-index: 1;
+      filter: blur(2px);
+      pointer-events: none;
+    }
+
+    .soft-card {
+      background: rgba(255,255,255,0.92);
+      border: 1px solid rgba(244, 114, 182, 0.16);
+      box-shadow: 0 18px 45px rgba(236, 72, 153, 0.08);
+    }
+
+    .lux-card {
+      background: linear-gradient(180deg, rgba(255,255,255,0.98), rgba(255,248,252,0.98));
+      border: 1px solid rgba(244, 114, 182, 0.14);
+      box-shadow: 0 16px 36px rgba(15, 23, 42, 0.06);
+      transition: transform 0.35s ease, box-shadow 0.35s ease, border-color 0.35s ease;
+    }
+
+    .lux-card:hover {
+      transform: translateY(-8px);
+      box-shadow: 0 22px 45px rgba(236, 72, 153, 0.14);
+      border-color: rgba(219, 39, 119, 0.3);
+    }
+
+    .btn-main {
+      background: linear-gradient(135deg, var(--pink-main), var(--pink-deep));
+      box-shadow: 0 12px 28px rgba(219, 39, 119, 0.24);
+    }
+
+    .btn-main:hover {
+      filter: brightness(1.02);
+      transform: translateY(-1px);
+    }
+
+    .btn-soft {
+      background: rgba(255,255,255,0.88);
+      border: 1px solid rgba(244, 114, 182, 0.22);
+    }
+
+    .section-title {
+      letter-spacing: 0.18em;
+    }
+
+    .slider-dot {
+      transition: transform 0.25s ease, opacity 0.25s ease, background-color 0.25s ease;
+    }
+
+    .slider-dot:hover {
+      transform: scale(1.12);
+    }
+
+    .nav-link {
+      position: relative;
+    }
+
+    .nav-link::after {
+      content: "";
+      position: absolute;
+      left: 0;
+      bottom: -6px;
+      width: 100%;
+      height: 2px;
+      background: var(--pink-main);
+      transform: scaleX(0);
+      transform-origin: center;
+      transition: transform 0.28s ease;
+    }
+
+    .nav-link:hover::after {
+      transform: scaleX(1);
+    }
+
+    .nav-link.active {
+      color: var(--pink-main);
+    }
+
+    .nav-link.active::after {
+      transform: scaleX(1);
+    }
+
+    .slide-badge {
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+      box-shadow: 0 16px 35px rgba(15, 23, 42, 0.12);
+    }
+
+    .gallery-frame::before {
+      content: "";
+      position: absolute;
+      inset: 12px;
+      border-radius: 1.6rem;
+      border: 1px solid rgba(255, 255, 255, 0.45);
+      pointer-events: none;
+      z-index: 1;
+    }
+
+    .gallery-glow {
+      position: absolute;
+      inset: auto;
+      width: 220px;
+      height: 220px;
+      border-radius: 9999px;
+      filter: blur(60px);
+      pointer-events: none;
+      z-index: 0;
+      opacity: 0.7;
+    }
+
+    .gallery-glow.glow-one {
+      top: 14%;
+      left: -6%;
+      background: rgba(244, 114, 182, 0.28);
+    }
+
+    .gallery-glow.glow-two {
+      right: -5%;
+      bottom: 10%;
+      background: rgba(251, 207, 232, 0.75);
+    }
+
+    .gallery-info-chip {
+      backdrop-filter: blur(8px);
+      -webkit-backdrop-filter: blur(8px);
+    }
+
+    .slider-dot.active-dot {
+      background-color: rgb(236 72 153 / 1);
+      transform: scale(1.15);
+      box-shadow: 0 0 0 4px rgba(255,255,255,0.22);
+    }
+
+    .gallery-clickable {
+      cursor: zoom-in;
+    }
+
+    .gallery-modal {
+      opacity: 0;
+      visibility: hidden;
+      pointer-events: none;
+      transition: opacity 0.3s ease, visibility 0.3s ease;
+    }
+
+    .gallery-modal.open {
+      opacity: 1;
+      visibility: visible;
+      pointer-events: auto;
+    }
+
+    .gallery-modal-card {
+      transform: scale(0.94) translateY(12px);
+      transition: transform 0.35s ease;
+    }
+
+    .gallery-modal.open .gallery-modal-card {
+      transform: scale(1) translateY(0);
+    }
+
+    .header-inner {
+      transition: padding 0.3s ease;
+    }
+
+    .header-scrolled {
+      background: rgba(255, 255, 255, 0.96);
+      box-shadow: 0 12px 30px rgba(15, 23, 42, 0.08);
+      border-color: rgba(244, 114, 182, 0.18);
+    }
+
+    
+    .header-hide {
+      transform: translateY(-100%);
+      transition: transform 0.35s ease;
+    }
+
+    .header-show {
+      transform: translateY(0);
+      transition: transform 0.35s ease;
+    }
+
+    .header-scrolled .header-inner {
+      padding-top: 0.8rem;
+      padding-bottom: 0.8rem;
+    }
+
+
+    @media (max-width: 1024px) {
+      .stack-slide.is-prev {
+        transform: translateX(-18%) translateZ(0) rotateY(20deg) scale(0.9);
+      }
+
+      .stack-slide.is-next {
+        transform: translateX(18%) translateZ(0) rotateY(-20deg) scale(0.9);
+      }
+    }
+
+    @media (max-width: 640px) {
+      .stack-slide.is-prev {
+        transform: translateX(-10%) translateZ(0) rotateY(14deg) scale(0.9);
+        opacity: 0.55;
+      }
+
+      .stack-slide.is-next {
+        transform: translateX(10%) translateZ(0) rotateY(-14deg) scale(0.9);
+        opacity: 0.55;
+      }
+
+      .stack-slide.is-hidden-left,
+      .stack-slide.is-hidden-right {
+        transform: translateX(0) translateZ(-80px) scale(0.8);
+      }
+    }
+  </style>
+</head>
+<body class="text-gray-800">
+
+  <div class="border-b border-pink-200/70 bg-gradient-to-r from-pink-100 via-rose-50 to-pink-100 px-4 py-2 text-center text-sm font-semibold tracking-wide text-pink-900">
+    WELCOME TO NEMA NAILS ✨
+  </div>
+
+  <header class="glass-header fixed top-0 left-0 right-0 z-50 border-b border-pink-100/80">
+    <div class="header-inner mx-auto flex max-w-7xl items-center justify-between gap-4 px-4 py-4 sm:px-6 lg:px-8">
+      <a href="index.html" class="flex items-center gap-3">
+        <img src="assets/Logo-Nema.PNG" alt="Logo Nema Nails" class="h-14 w-auto object-contain">
+        <div>
+          <p class="text-lg font-extrabold tracking-wide text-pink-700">Nema Nails</p>
+        
+        </div>
+      </a>
+
+      <nav class="hidden md:block">
+        <ul class="flex items-center gap-7 text-sm font-semibold">
+          <li><a href="#services" data-target="services" class="nav-link text-gray-600 transition hover:text-pink-600">Services</a></li>
+          <li><a href="#gallery" data-target="gallery" class="nav-link text-gray-600 transition hover:text-pink-600">Gallery</a></li>
+          <li><a href="#products" data-target="products" class="nav-link text-gray-600 transition hover:text-pink-600">Products</a></li>
+          <li><a href="#contact" data-target="contact" class="nav-link text-gray-600 transition hover:text-pink-600">Contact</a></li>
+        </ul>
+      </nav>
+
+      <div class="flex items-center gap-3">
+        <a
+          href="index0.html"
+          class="btn-main inline-flex items-center gap-2 rounded-full px-5 py-2.5 text-sm font-semibold text-white transition duration-300"
+        >
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <circle cx="9" cy="20" r="1.5"></circle>
+            <circle cx="18" cy="20" r="1.5"></circle>
+            <path d="M3 4h2l2.2 10.2a1 1 0 0 0 1 .8h9.8a1 1 0 0 0 1-.8L21 7H7"></path>
+          </svg>
+          Order
+        </a>
+
+        <a
+          href="https://wa.me/6283815423269?text=Halo%20Nema%20Saya%20Mau%20Tanya%20Produk"
+          target="_blank"
+          class="inline-flex min-w-[110px] items-center justify-center rounded-full border border-pink-200 bg-white px-5 py-2.5 text-sm font-semibold text-pink-700 shadow-sm transition hover:bg-pink-50"
+        >
+          WhatsApp
+        </a>
+      </div>
+    </div>
+  </header>
+
+  <section class="relative overflow-hidden bg-gradient-to-b from-pink-50 via-white to-pink-50/50 pt-24">
+    <div class="hero-glow absolute inset-0"></div>
+    <div class="relative z-10 mx-auto grid min-h-[calc(100vh-90px)] max-w-7xl items-center gap-12 px-4 py-12 sm:px-6 lg:grid-cols-2 lg:px-8">
+
+      <div class="max-w-xl">
+        
+        <h1 class="text-4xl font-extrabold leading-tight text-gray-900 md:text-5xl">
+          HELLO NAIL LOVERS,
+          <span class="bg-gradient-to-r from-pink-600 to-pink-500 bg-clip-text text-transparent">WELCOME TO NEMA NAILS</span>
+        </h1>
+
+        <p class="mt-5 text-lg leading-relaxed text-gray-600">
+          Kami menyediakan berbagai macam kuku cantik dengan desain modern,
+          elegan, dan kekinian untuk membuat penampilanmu semakin menarik.
+        </p>
+
+        <div class="mt-8 flex flex-wrap gap-4">
+          <a
+            href="#products"
+            class="btn-main rounded-full px-7 py-3 font-semibold text-white transition duration-300"
+          >
+            Best Sell Product
+          </a>
+
+          <a
+            href="#gallery"
+            class="btn-soft rounded-full px-7 py-3 font-semibold text-pink-700 transition hover:bg-pink-50"
+          >
+            Gallery
+          </a>
+        </div>
+
+        <div class="mt-10 grid grid-cols-3 gap-4 text-center">
+          <div class="soft-card rounded-2xl p-4">
+            <p class="text-2xl font-extrabold text-pink-600">Good</p>
+            <p class="text-sm text-gray-500">Nail</p>
+            <p class="text-sm text-gray-500">Designs</p>
+          </div>
+          <div class="soft-card rounded-2xl p-4">
+            <p class="text-2xl font-extrabold text-pink-600">Best</p>
+            <p class="text-sm text-gray-500">Nail</p>
+            <p class="text-sm text-gray-500">Service</p>
+          </div>
+          <div class="soft-card rounded-2xl p-4">
+            <p class="text-2xl font-extrabold text-pink-600">Nice</p>
+            <p class="text-sm text-gray-500">Nail</p>
+            <p class="text-sm text-gray-500">Quality</p>
+          </div>
+        </div>
+      </div>
+
+      <div id="gallery" class="relative">
+        <div class="gallery-glow glow-one"></div>
+        <div class="gallery-glow glow-two"></div>
+
+        <div class="gallery-frame relative h-[440px] overflow-hidden rounded-[2rem] border border-pink-200/70 bg-gradient-to-br from-pink-100 via-rose-50 to-pink-200/80 p-3 shadow-[0_25px_70px_rgba(236,72,153,0.18)]">
+          <div class="absolute inset-0 bg-[radial-gradient(circle_at_top_right,rgba(255,255,255,0.7),transparent_28%),radial-gradient(circle_at_bottom_left,rgba(255,255,255,0.4),transparent_30%)]"></div>
+
+          <div class="slide-badge absolute left-5 top-5 z-30 rounded-full border border-white/40 bg-white/55 px-4 py-2 text-xs font-semibold uppercase tracking-[0.22em] text-pink-700">
+            Premium Gallery
+          </div>
+
+          <div id="stackSlider" class="relative h-full w-full">
+            <div class="stack-slide gallery-clickable absolute inset-0 flex items-center justify-center">
+              <img src="assets/red0.JPEG" alt="Nail Design 1" class="h-[360px] w-[72%] rounded-[2rem] object-cover shadow-2xl">
+            </div>
+
+            <div class="stack-slide gallery-clickable absolute inset-0 flex items-center justify-center">
+              <img src="assets/pink-white0.JPG" alt="Nail Design 2" class="h-[360px] w-[72%] rounded-[2rem] object-cover shadow-2xl">
+            </div>
+
+            <div class="stack-slide gallery-clickable absolute inset-0 flex items-center justify-center">
+              <img src="assets/brown0.JPG" alt="Nail Design 3" class="h-[360px] w-[72%] rounded-[2rem] object-cover shadow-2xl">
+            </div>
+
+            <div class="stack-slide gallery-clickable absolute inset-0 flex items-center justify-center">
+              <img src="assets/brown-white0.JPG" alt="Nail Design 4" class="h-[360px] w-[72%] rounded-[2rem] object-cover shadow-2xl">
+            </div>
+          </div>
+
+          
+          <button
+            id="prevBtn"
+            type="button"
+            class="absolute left-4 top-1/2 z-30 -translate-y-1/2 rounded-full border border-white/70 bg-white/85 px-3.5 py-2.5 text-lg shadow-lg transition hover:bg-white"
+            aria-label="Previous slide"
+          >
+            ❮
+          </button>
+
+          <button
+            id="nextBtn"
+            type="button"
+            class="absolute right-4 top-1/2 z-30 -translate-y-1/2 rounded-full border border-white/70 bg-white/85 px-3.5 py-2.5 text-lg shadow-lg transition hover:bg-white"
+            aria-label="Next slide"
+          >
+            ❯
+          </button>
+
+          <div class="absolute bottom-5 left-1/2 z-30 flex -translate-x-1/2 gap-2.5">
+            <button class="slider-dot h-3 w-3 rounded-full bg-pink-500" data-slide="0" type="button" aria-label="Slide 1"></button>
+            <button class="slider-dot h-3 w-3 rounded-full bg-white/70" data-slide="1" type="button" aria-label="Slide 2"></button>
+            <button class="slider-dot h-3 w-3 rounded-full bg-white/70" data-slide="2" type="button" aria-label="Slide 3"></button>
+            <button class="slider-dot h-3 w-3 rounded-full bg-white/70" data-slide="3" type="button" aria-label="Slide 4"></button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="services" class="bg-pink-50/70 py-20">
+    <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+      <div class="text-center">
+        <p class="section-title text-sm font-semibold uppercase text-pink-600">Our Services</p>
+        <h2 class="mt-3 text-3xl font-bold text-gray-900">What We Offer</h2>
+      </div>
+
+      <div class="mt-12 grid gap-6 md:grid-cols-3">
+        <div class="lux-card rounded-3xl p-8">
+          <div class="mb-4 inline-flex h-12 w-12 items-center justify-center rounded-full bg-pink-100 text-xl shadow-sm">💅</div>
+          <h3 class="text-xl font-bold text-gray-900">Unlimited Custom Design</h3>
+          <p class="mt-3 text-gray-600">Setiap desain dibuat Detail Sesuai Dengan Keinginanmu.</p>
+        </div>
+
+        <div class="lux-card rounded-3xl p-8">
+          <div class="mb-4 inline-flex h-12 w-12 items-center justify-center rounded-full bg-pink-100 text-xl shadow-sm">✨</div>
+          <h3 class="text-xl font-bold text-gray-900">Premium Look</h3>
+          <p class="mt-3 text-gray-600">Pilihan warna dan model yang memberikan kesan mewah dan feminin.</p>
+        </div>
+
+        <div class="lux-card rounded-3xl p-8">
+          <div class="mb-4 inline-flex h-12 w-12 items-center justify-center rounded-full bg-pink-100 text-xl shadow-sm">🛍️</div>
+          <h3 class="text-xl font-bold text-gray-900">Easy Order</h3>
+          <p class="mt-3 text-gray-600">Booking & Checkout Nail Dengan Mudah Atau Hubungi Admin.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="products" class="bg-white py-20">
+    <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+      <div class="text-center">
+        <p class="section-title text-sm font-semibold uppercase text-pink-600">Featured Products</p>
+        <h2 class="mt-3 text-3xl font-bold text-gray-900">Popular Nail Collections</h2>
+      </div>
+
+      <div class="mt-12 grid gap-8 sm:grid-cols-2 lg:grid-cols-3">
+        <div class="lux-card overflow-hidden rounded-3xl">
+          <div class="overflow-hidden">
+            <img src="assets/pink1.PNG" alt="Product 1" class="h-72 w-full object-cover transition duration-500 hover:scale-105">
+          </div>
+          <div class="p-6">
+            <h3 class="text-xl font-bold text-pink-600">Soft Pink Elegance</h3>
+            <p class="mt-2 text-gray-600">Desain kuku feminin dengan sentuhan warna pink lembut.</p>
+          </div>
+        </div>
+
+        <div class="lux-card overflow-hidden rounded-3xl">
+          <div class="overflow-hidden">
+            <img src="assets/pink-blue.PNG" alt="Product 2" class="h-72 w-full object-cover transition duration-500 hover:scale-105">
+          </div>
+          <div class="p-6">
+            <h3 class="text-xl font-bold text-pink-600">Luxury Silver Touch</h3>
+            <p class="mt-2 text-gray-600">Pilihan kuku cantik dengan nuansa silver yang elegan.</p>
+          </div>
+        </div>
+
+        <div class="lux-card overflow-hidden rounded-3xl">
+          <div class="overflow-hidden">
+            <img src="assets/red-pink0.PNG" alt="Product 3" class="h-72 w-full object-cover transition duration-500 hover:scale-105">
+          </div>
+          <div class="p-6">
+            <h3 class="text-xl font-bold text-pink-600">Classic Modern Style</h3>
+            <p class="mt-2 text-gray-600">Perpaduan gaya klasik dan modern untuk tampilan menawan.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="bg-gradient-to-r from-pink-600 to-rose-500 py-20">
+    <div class="mx-auto max-w-4xl px-4 text-center sm:px-6 lg:px-8">
+      <h2 class="text-3xl font-bold text-white md:text-4xl">
+        Mau tanya produk atau pesan sekarang?
+      </h2>
+      <p class="mt-4 text-pink-100">
+        Hubungi admin kami untuk informasi produk, harga, dan pemesanan.
+      </p>
+      <a
+        href="https://wa.me/6283815423269?text=Halo%20Nema%20Saya%20Mau%20Tanya%20Produk"
+        target="_blank"
+        class="mt-8 inline-block rounded-full bg-white px-8 py-3 font-bold text-pink-600 shadow-lg transition hover:-translate-y-0.5 hover:bg-pink-50"
+      >
+        Chat via WhatsApp
+      </a>
+    </div>
+  </section>
+
+  <div id="galleryModal" class="gallery-modal fixed inset-0 z-[80] bg-black/75 p-4 sm:p-6">
+    <div class="flex h-full items-center justify-center">
+      <div class="gallery-modal-card relative w-full max-w-5xl overflow-hidden rounded-[2rem] border border-white/15 bg-white shadow-2xl">
+        <button
+          id="closeGalleryModal"
+          type="button"
+          class="absolute right-4 top-4 z-20 inline-flex h-11 w-11 items-center justify-center rounded-full bg-white/90 text-xl text-gray-700 shadow-lg transition hover:bg-white"
+          aria-label="Close gallery preview"
+        >
+          ✕
+        </button>
+
+        <div class="grid gap-0 lg:grid-cols-[1.2fr_0.8fr]">
+          <div class="bg-gradient-to-br from-pink-100 via-rose-50 to-pink-200 p-4 sm:p-6">
+            <div class="relative overflow-hidden rounded-[1.5rem] bg-white/60">
+              <img
+                id="galleryModalImage"
+                src=""
+                alt=""
+                class="h-[320px] w-full object-cover sm:h-[420px] lg:h-[560px]"
+              />
+            </div>
+          </div>
+
+          <div class="flex flex-col justify-between bg-white p-6 sm:p-8">
+            <div>
+              <p class="inline-flex rounded-full bg-pink-100 px-4 py-1.5 text-xs font-semibold uppercase tracking-[0.22em] text-pink-700">
+                Gallery Preview
+              </p>
+              <h3 id="galleryModalTitle" class="mt-4 text-3xl font-bold text-gray-900">
+                Premium Nail Design
+              </h3>
+              <p id="galleryModalText" class="mt-4 text-base leading-relaxed text-gray-600">
+                Detail desain kuku ditampilkan lebih besar supaya tampilannya lebih elegan dan mewah.
+              </p>
+            </div>
+
+            <div class="mt-8 flex flex-wrap gap-3">
+              <button
+                id="prevModalBtn"
+                type="button"
+                class="rounded-full border border-pink-200 bg-white px-5 py-3 font-semibold text-pink-700 transition hover:bg-pink-50"
+              >
+                ← Prev
+              </button>
+
+              <button
+                id="nextModalBtn"
+                type="button"
+                class="rounded-full bg-pink-600 px-5 py-3 font-semibold text-white transition hover:bg-pink-700"
+              >
+                Next →
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <footer id="contact" class="bg-gray-950 text-white">
+    <div class="mx-auto max-w-7xl px-4 py-16 sm:px-6 lg:px-8">
+      <div class="grid gap-10 md:grid-cols-3">
+        <div>
+          <div class="flex items-center gap-3">
+            <img src="assets/Logo-Nema.PNG" alt="Logo Nema Nails" class="h-14 w-auto object-contain">
+            <div>
+              <h3 class="text-xl font-bold text-pink-300">Nema Nails</h3>
+              <p class="text-sm text-gray-400">Beauty & Nail Collection</p>
+            </div>
+          </div>
+          <p class="mt-5 max-w-sm leading-relaxed text-gray-400">
+            Toko kuku cantik dengan berbagai pilihan desain modern, elegan, dan menarik untuk semua gaya.
+          </p>
+        </div>
+
+        <div>
+          <h4 class="text-lg font-semibold text-white">Quick Links</h4>
+          <ul class="mt-5 space-y-3 text-gray-400">
+            <li><a href="#services" class="transition hover:text-pink-300">Services</a></li>
+            <li><a href="#gallery" class="transition hover:text-pink-300">Gallery</a></li>
+            <li><a href="#products" class="transition hover:text-pink-300">Products</a></li>
+            <li><a href="#contact" class="transition hover:text-pink-300">Contact</a></li>
+          </ul>
+        </div>
+
+        <div>
+          <h4 class="text-lg font-semibold text-white">Contact</h4>
+          <ul class="mt-5 space-y-3 text-gray-400">
+            <li>WhatsApp: 0838-1542-3269</li>
+            <li>TikTok: @nema.nailstudio</li>
+            <li>instagram: @nema.nailstudio</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="mt-12 border-t border-white/10 pt-6 text-center text-sm text-gray-500">
+        © 2026 Nema Nails. All rights reserved.
+      </div>
+    </div>
+  </footer>
+
+  <script>
+    const stackSlides = document.querySelectorAll('.stack-slide');
+    const dots = document.querySelectorAll('.slider-dot');
+    const prevBtn = document.getElementById('prevBtn');
+    const nextBtn = document.getElementById('nextBtn');
+    const gallery = document.getElementById('gallery');
+    const navLinks = document.querySelectorAll('.nav-link');
+    const slideCounter = document.getElementById('slideCounter');
+    const slideCaption = document.getElementById('slideCaption');
+
+    const slideCaptions = [
+      'Desain premium yang tampil clean, feminin, dan elegan untuk semua gaya.',
+      'Kombinasi warna soft yang mewah untuk tampilan kuku yang manis.',
+      'Nuansa hangat dan classy untuk look yang lebih dewasa dan chic.',
+      'Perpaduan clean detail dan glossy finish untuk hasil yang lebih mewah.'
+    ];
+
+    const slideTitles = [
+      'Ruby Gloss Elegance',
+      'Soft Pink White Charm',
+      'Warm Mocha Luxury',
+      'Brown White Signature'
+    ];
+
+    const galleryModal = document.getElementById('galleryModal');
+    const galleryModalImage = document.getElementById('galleryModalImage');
+    const galleryModalTitle = document.getElementById('galleryModalTitle');
+    const galleryModalText = document.getElementById('galleryModalText');
+    const closeGalleryModal = document.getElementById('closeGalleryModal');
+    const prevModalBtn = document.getElementById('prevModalBtn');
+    const nextModalBtn = document.getElementById('nextModalBtn');
+
+    let currentIndex = 0;
+    let autoSlide = null;
+
+    function updateStackSlider() {
+      const total = stackSlides.length;
+      const prevIndex = (currentIndex - 1 + total) % total;
+      const nextIndex = (currentIndex + 1) % total;
+
+      stackSlides.forEach((slide, index) => {
+        slide.classList.remove(
+          'is-active',
+          'is-prev',
+          'is-next',
+          'is-hidden-left',
+          'is-hidden-right'
+        );
+
+        if (index === currentIndex) {
+          slide.classList.add('is-active');
+        } else if (index === prevIndex) {
+          slide.classList.add('is-prev');
+        } else if (index === nextIndex) {
+          slide.classList.add('is-next');
+        } else {
+          const diff = (index - currentIndex + total) % total;
+          if (diff < total / 2) {
+            slide.classList.add('is-hidden-right');
+          } else {
+            slide.classList.add('is-hidden-left');
+          }
+        }
+      });
+
+      dots.forEach((dot, index) => {
+        dot.classList.remove('bg-pink-500', 'active-dot');
+        dot.classList.add('bg-white/70');
+
+        if (index === currentIndex) {
+          dot.classList.remove('bg-white/70');
+          dot.classList.add('bg-pink-500', 'active-dot');
+        }
+      });
+
+      if (slideCounter) {
+        slideCounter.textContent = `${String(currentIndex + 1).padStart(2, '0')} / ${String(total).padStart(2, '0')}`;
+      }
+
+      if (slideCaption) {
+        slideCaption.textContent = slideCaptions[currentIndex] || slideCaptions[0];
+      }
+    }
+
+    function nextSlide() {
+      currentIndex = (currentIndex + 1) % stackSlides.length;
+      updateStackSlider();
+    }
+
+    function prevSlide() {
+      currentIndex = (currentIndex - 1 + stackSlides.length) % stackSlides.length;
+      updateStackSlider();
+    }
+
+    function goToSlide(index) {
+      currentIndex = index;
+      updateStackSlider();
+    }
+
+    function syncGalleryModal() {
+      if (!galleryModalImage) return;
+      const currentImg = stackSlides[currentIndex]?.querySelector('img');
+      if (!currentImg) return;
+
+      galleryModalImage.src = currentImg.getAttribute('src') || '';
+      galleryModalImage.alt = currentImg.getAttribute('alt') || '';
+      galleryModalTitle.textContent = slideTitles[currentIndex] || 'Premium Nail Design';
+      galleryModalText.textContent = slideCaptions[currentIndex] || slideCaptions[0];
+    }
+
+    function openGalleryModal(index = currentIndex) {
+      currentIndex = index;
+      updateStackSlider();
+      syncGalleryModal();
+      if (galleryModal) galleryModal.classList.add('open');
+      document.body.style.overflow = 'hidden';
+    }
+
+    function closeGalleryPreview() {
+      if (galleryModal) galleryModal.classList.remove('open');
+      document.body.style.overflow = '';
+    }
+
+    function startAutoSlide() {
+      stopAutoSlide();
+      autoSlide = setInterval(nextSlide, 2200);
+    }
+
+    function stopAutoSlide() {
+      if (autoSlide) clearInterval(autoSlide);
+    }
+
+    nextBtn.addEventListener('click', () => {
+      nextSlide();
+      startAutoSlide();
+    });
+
+    prevBtn.addEventListener('click', () => {
+      prevSlide();
+      startAutoSlide();
+    });
+
+    dots.forEach((dot) => {
+      dot.addEventListener('click', () => {
+        goToSlide(Number(dot.dataset.slide));
+        startAutoSlide();
+      });
+    });
+
+    gallery.addEventListener('mouseenter', stopAutoSlide);
+    gallery.addEventListener('mouseleave', startAutoSlide);
+
+    stackSlides.forEach((slide, index) => {
+      slide.addEventListener('click', () => openGalleryModal(index));
+    });
+
+    if (closeGalleryModal) {
+      closeGalleryModal.addEventListener('click', closeGalleryPreview);
+    }
+
+    if (galleryModal) {
+      galleryModal.addEventListener('click', (event) => {
+        if (event.target === galleryModal) closeGalleryPreview();
+      });
+    }
+
+    if (prevModalBtn) {
+      prevModalBtn.addEventListener('click', () => {
+        prevSlide();
+        syncGalleryModal();
+      });
+    }
+
+    if (nextModalBtn) {
+      nextModalBtn.addEventListener('click', () => {
+        nextSlide();
+        syncGalleryModal();
+      });
+    }
+
+    window.addEventListener('keydown', (event) => {
+      if (!galleryModal || !galleryModal.classList.contains('open')) return;
+
+      if (event.key === 'Escape') closeGalleryPreview();
+      if (event.key === 'ArrowLeft') {
+        prevSlide();
+        syncGalleryModal();
+      }
+      if (event.key === 'ArrowRight') {
+        nextSlide();
+        syncGalleryModal();
+      }
+    });
+
+
+    const siteHeader = document.querySelector('header');
+
+    function updateActiveMenu() {
+      const sections = [
+        document.getElementById('gallery'),
+        document.getElementById('services'),
+        document.getElementById('products'),
+        document.getElementById('contact')
+      ].filter(Boolean);
+
+      let currentSection = '';
+
+      sections.forEach((section) => {
+        const rect = section.getBoundingClientRect();
+        if (rect.top <= 140 && rect.bottom >= 140) {
+          currentSection = section.id;
+        }
+      });
+
+      navLinks.forEach((link) => {
+        const target = link.dataset.target;
+        link.classList.toggle('active', target === currentSection);
+      });
+    }
+
+    function syncHeaderScrollState() {
+      if (!siteHeader) return;
+      if (window.scrollY > 16) {
+        siteHeader.classList.add('header-scrolled');
+      } else {
+        siteHeader.classList.remove('header-scrolled');
+      }
+    }
+
+    window.addEventListener('scroll', syncHeaderScrollState);
+    window.addEventListener('scroll', updateActiveMenu);
+
+    let lastScroll = 0;
+
+    function handleHeaderReveal() {
+      const currentScroll = window.scrollY;
+
+      if (currentScroll > lastScroll && currentScroll > 80) {
+        siteHeader.classList.add('header-hide');
+        siteHeader.classList.remove('header-show');
+      } else {
+        siteHeader.classList.add('header-show');
+        siteHeader.classList.remove('header-hide');
+      }
+
+      lastScroll = currentScroll;
+    }
+
+    window.addEventListener('scroll', handleHeaderReveal);
+
+    syncHeaderScrollState();
+    updateActiveMenu();
+
+    updateStackSlider();
+    startAutoSlide();
+  </script>
+
+</body>
+</html>
